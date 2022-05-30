@@ -16,6 +16,7 @@
         "postcss": "^8.1.14"
     },
     "dependencies": {
+        "laravel-vue-pagination": "^3.0.0",
         "vue": "^3.2.36",
         "vue-router": "^4.0.15",
         "vue-sweetalert2": "^5.0.5",

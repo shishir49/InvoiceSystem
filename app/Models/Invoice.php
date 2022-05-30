@@ -9,5 +9,13 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'company_name', 'company_address', 'compay_phone', 'customer_name', 'customer_phone', 'customer_address', 'gross_total', 'vat', 'tax', 'status'];
+    protected $fillable = ['customer_id', 'gross_total', 'vat', 'tax', 'status'];
+
+    public function invoiceProducts() {
+        return $this->hasMany('App\Models\InvoiceProduct', 'invoice_id');
+    }
+
+    public function customers() {
+        return $this->belongsTo('App\Models\Customer', 'customer_id');
+    }
 }

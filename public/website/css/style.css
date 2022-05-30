@@ -1,0 +1,41 @@
+body{
+	margin:auto;
+	font-family: 'Slabo 27px', serif;
+}
+
+h1, h2, h3, h4, h5, h6, p{
+	margin:0;
+	color:#3e3e3e;
+}
+
+a{
+	text-decoration: none;
+	color:#2196f3;
+	transition: 0.3s ease;
+}
+
+a:hover{
+	color:red;
+}
+
+.header{
+	width:100%;
+	float:left;
+	min-height:10vh;
+	background: black;
+}
+
+.content-body{
+	width:100%;
+	float:left;
+	min-height:80vh;
+	background: #eee;
+	margin:0;
+}
+
+.footer{
+	width:100%;
+	float:left;
+	min-height:10vh;
+	background: #222222;
+}
