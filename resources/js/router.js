@@ -4,6 +4,7 @@ import adminLayout from './app/layout/admin'
 import Dashboard from './app/admin/dashboard.vue'
 import AddInvoice from './app/admin/invoice/add.vue'
 import UpdateInvoice from './app/admin/invoice/update.vue'
+import ViewInvoice from './app/admin/invoice/view.vue'
 import InvoiceList from './app/admin/invoice/list.vue'
 import Login from './app/auth/login.vue'
 import Registration from './app/auth/registration.vue'
@@ -31,6 +32,12 @@ const routes = [
         path : '/invoice-list',
         name : 'invoice-list',
         component : InvoiceList,
+        meta : { layout : adminLayout, auth : true }
+    },
+    {
+        path : '/view-invoice/:id',
+        name : 'view-invoice',
+        component : ViewInvoice,
         meta : { layout : adminLayout, auth : true }
     },
     {

@@ -15,7 +15,8 @@
                             </ol>
                         </div>
                     </div>
-                </div><!-- /.container-fluid -->
+                </div>
+                <!-- /.container-fluid -->
             </section>
 
             <!-- Main content -->
@@ -35,11 +36,9 @@
                             </button>
                             </div>
                         </div>
-                        <!-- /.card-header -->
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <!-- /.form-group -->
                                     <div class="form-group">
                                     <label>Customer <span class="text-danger">*</span></label>
                                     <select v-model="data.customer_id" class="form-control mb-2" placeholder="Customer">
@@ -48,41 +47,33 @@
                                     </select>
                                     <span v-if="allerrors.customer_id" class="text-danger">{{allerrors.customer_id[0]}}</span>
                                     </div>
-                                    <!-- /.form-group -->
                                 </div>
-                                <!-- /.col -->
                                 <div class="col-md-6">
-                                    <!-- /.form-group -->
+                                    <label for="">Product <span class="text-danger">*</span></label>
+                                    <select class="form-control" v-model="data.product_id" @change="getProductCost">
+                                        <option value="">Select a Product</option>
+                                        <option v-for="(product, i) in products" :key="i" :value="product.id">{{ product.product_name }}</option>
+                                    </select>
+                                    <span v-if="allerrors.product_id" class="text-danger">{{allerrors.product_id[0]}}</span>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="form-group">
                                     <label>Vat</label>
-                                    <input type="text" class="form-control mb-2" v-model="data.vat" placeholder="Vat">
-                                    <span v-if="allerrors.vat">{{allerrors.vat[0]}}</span>
+                                    <input @keyup="calculateGrossTotal" type="text" class="form-control mb-2" v-model="data.vat" placeholder="Vat">
                                     </div>
-                                    <!-- /.form-group -->
                                 </div>
-                                <!-- /.col -->
                                 <div class="col-md-6">
-                                    <!-- /.form-group -->
                                     <div class="form-group">
                                         <label>Tax</label>
-                                        <input type="text" class="form-control mb-2" v-model="data.tax" placeholder="Tax">
-                                        <span v-if="allerrors.tax">{{allerrors.tax[0]}}</span>
+                                        <input @keyup="calculateGrossTotal" type="text" class="form-control mb-2" v-model="data.tax" placeholder="Tax">
                                     </div>
-                                    <!-- /.form-group -->
                                 </div>
-                                <!-- /.col -->
                                 <div class="col-md-6">
-                                    <!-- /.form-group -->
-                                    <div class="form-group">
-                                    <label>Tota Product Price  <span class="text-danger">*</span></label>
-                                    <input disabled type="text" class="form-control mb-2" v-model="data.total_product_price" placeholder="Tota Product Price">
-                                    <span v-if="allerrors.total_product_price">{{allerrors.total_product_price[0]}}</span>
-                                    </div>
-                                    <!-- /.form-group -->
+                                    <label for="">Quantity <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Quantity" v-model="data.quantity" @keyup="getProductCost">
+                                    <span v-if="allerrors.quantity" class="text-danger">{{allerrors.quantity[0]}}</span>
                                 </div>
-                                <!-- /.col -->
                                 <div class="col-md-6">
-                                    <!-- /.form-group -->
                                     <div class="form-group">
                                         <label>Status <span class="text-danger">*</span></label>
                                         <select v-model="data.status" class="form-control mb-2" placeholder="Status">
@@ -90,71 +81,35 @@
                                             <option value="1">Paid</option>
                                             <option value="2">Due</option>
                                         </select>
-                                        <span v-if="allerrors.status">{{allerrors.status[0]}}</span>
+                                        <span class="text-danger" v-if="allerrors.status">{{allerrors.status[0]}}</span>
                                     </div>
-                                    <!-- /.form-group -->
-                                </div>
-
-                                <!-- <div class="col-md-6">
-                                    <label for="">Product </label>
-                                    <select class="form-control" v-model="data.product_id" @change="getProductCost">
-                                        <option value="">Select a Product</option>
-                                        <option v-for="(product, i) in products" :key="i" :value="product.id">{{ product.product_name }}</option>
-                                    </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="">Quantity</label>
-                                    <input type="text" class="form-control" placeholder="Quantity" v-model="data.quantity" @keyup="getProductCost">
-                                </div> -->
-                                <!-- /.col -->
-                                <h3>Add Products</h3>
-                                <div class="form-group" v-for="(item,k) in inputs" :key="k">
-                                    <div class="row mb-2">
-                                        <div class="col-md-3">
-                                            <select class="form-control" v-model="item.product_id" @change="getProductCost">
-                                                <option value="">Select Product</option>
-                                                <option v-for="(product, i) in products" :key="i" :value="product.id">{{ product.product_name }}</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="text" class="form-control" placeholder="Quantity" v-model="item.quantity" @keyup="getProductCost">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="text" class="form-control" placeholder="Total" v-model="item.total">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span>
-                                                <i class="fa fa-minus-circle text-danger" @click="removeElement(k)" v-show="k || ( !k && inputs.length > 1)"></i>
-                                                <i class="fa fa-plus-circle text-success ml-4" @click="addElement(k)" v-show="k == inputs.length-1"></i>
-                                            </span>
-                                        </div>
+                                    <div class="form-group">
+                                    <label>Total Product Price  <span class="text-danger">*</span></label>
+                                    <input @change="calculateGrossTotal" disabled type="text" class="form-control mb-2" v-model="data.total_product_price" placeholder="Tota Product Price">
+                                    <span class="text-danger" v-if="allerrors.total_product_price">{{allerrors.total_product_price[0]}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                    <label>Gross Total  <span class="text-danger">*</span></label>
+                                    <input disabled type="text" class="form-control mb-2" v-model="data.gross_total" placeholder="Gross Total">
+                                    <span class="text-danger" v-if="allerrors.gross_total">{{allerrors.gross_total[0]}}</span>
                                     </div>
                                 </div>
                             </div>
-                            <!-- /.row -->
                             <div class="row">
-                                <!-- /.col -->
                                 <div class="col-md-3">
-                                    <!-- /.form-group -->
                                     <div class="form-group">
                                     <button @click="addInvoice" type="submit" class="btn btn-success">Submit</button>
                                     </div>
-                                    <!-- /.form-group -->
                                 </div>
-                                <!-- /.col -->
                             </div>
                         </div>
-                        <!-- /.card-body -->
-                        <div class="card-footer">
-                            Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                            the plugin.
-                        </div>
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.container-fluid -->
            </section>
-           <!-- /.content -->
         </div>   
     </div>
 </template>
@@ -166,22 +121,15 @@ export default {
             allerrors : [],
             data : {
                 customer_id : '',
-                vat : '',
-                tax : '',
+                vat : 0,
+                tax : 0,
                 total_product_price : '',
-                status : ''
-            },
-            inputs : [{
+                status : '',
                 product_id : '',
                 quantity : '',
-                total : ''
-            }],
-
-            input : {
-                product_id : '',
-                quantity : '',
-                total : ''
+                gross_total : ''
             },
+        
             companyInfo : [],
             products : [],
             customers : []
@@ -193,9 +141,12 @@ export default {
             axios.post('/api/add-invoice', this.data).then(respone => {
                 this.allerrors = []
                 this.data.customer_id = ''
+                this.data.product_id = ''
                 this.data.vat = ''
                 this.data.tax = ''
                 this.data.total_product_price = ''
+                this.data.gross_total = ''
+                this.data.quantity = ''
                 this.data.status = ''
                 this.$swal({
                    toast: true,
@@ -212,27 +163,18 @@ export default {
         },
 
         getProductCost() {
-            console.log(this.item.product_id)
-           axios.get('/api/product-cost?product_id='+this.item.product_id+'&&quantity='+this.item.quantity, this.data).then(response => {
-               this.input.total = response.data
+           axios.get('/api/product-cost?product_id='+this.data.product_id+'&&quantity='+this.data.quantity, this.data).then(response => {
+               this.data.total_product_price = response.data
+               this.calculateGrossTotal
            })
-        },
-
-        addElement() {
-           this.inputs.push({
-                product_id : '',
-                quantity : '',
-                total : ''
-           })
-        },
-
-        removeElement (index) {
-           this.inputs.splice(index, 1)
         },
     },
 
     computed : {
-
+        calculateGrossTotal() {
+            var total = this.data.gross_total = Number(this.data.total_product_price)+Number(this.data.vat)+Number(this.data.tax)
+            return total;
+        }
     },
 
     async created() {

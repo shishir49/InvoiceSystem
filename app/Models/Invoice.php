@@ -12,7 +12,7 @@ class Invoice extends Model
     protected $fillable = ['customer_id', 'gross_total', 'vat', 'tax', 'status'];
 
     public function invoiceProducts() {
-        return $this->hasMany('App\Models\InvoiceProduct', 'invoice_id');
+        return $this->hasOne('App\Models\InvoiceProduct', 'invoice_id');
     }
 
     public function customers() {

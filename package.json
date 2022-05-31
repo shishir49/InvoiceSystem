@@ -16,8 +16,11 @@
         "postcss": "^8.1.14"
     },
     "dependencies": {
+        "html2canvas": "^1.4.1",
+        "jspdf": "^2.5.1",
         "laravel-vue-pagination": "^3.0.0",
         "vue": "^3.2.36",
+        "vue-html-to-paper": "^1.4.4",
         "vue-router": "^4.0.15",
         "vue-sweetalert2": "^5.0.5",
         "vuex": "^4.0.2"

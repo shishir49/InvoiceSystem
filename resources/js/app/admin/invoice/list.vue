@@ -34,7 +34,7 @@
                                 <input type="date" v-model="date_to" class="form-control" placeholder="To">
                             </div>
                             <div class="col-3">
-                                <button @click="hospitalList" type="submit" class="btn btn-primary">Search</button>
+                                <button @click="invoiceList" type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </div>
                     </div>
@@ -66,22 +66,19 @@
                                     <td v-if="invoice.status==1"><button class="btn btn-success btn-sm">Paid</button></td>
                                     <td v-else><button class="btn btn-danger btn-sm">Due</button></td>
                                     <td>
-                                        <router-link :to="/update-hospital/ + `${invoice.hospital_slug}`">
-                                            <i class="fa fa-edit text-primary" data-toggle="Edit Hospital Info" title="Edit Hospital Info"></i>
+                                        <router-link :to="/update-invoice/ + `${invoice.id}`">
+                                            <i class="fa fa-edit text-primary" data-toggle="Edit Invoice" title="Edit Invoice"></i>
                                         </router-link>
                                         <i @click="showDeleteModal(invoice, i)" data-toggle="modal" data-target="#deleteModal" class="fa fa-trash text-danger ml-2" title="Delete This Hospital"></i>
-                                        <router-link :to="/admin/ + `${invoice.hospital_slug}` + '/doctor-list'">
-                                            <i class="fa fa-eye text-success ml-2" data-toggle="Visit Doctor List" title="Visit Doctor List"></i>
-                                        </router-link>
-                                        <router-link :to="/admin/ + `${invoice.hospital_slug}` + '/department-list'">
-                                            <i class="fa fa-print text-warning ml-2" data-toggle="Visit Department" title="Visit Department"></i>
+                                        <router-link :to="/view-invoice/ + `${invoice.id}`">
+                                            <i class="fa fa-eye text-success ml-2" data-toggle="View Invoice" title="View Invoice"></i>
                                         </router-link>
                                     </td>
                                 </tr>
                             </tbody>
                             <tbody v-else>
                                 <tr class="text-center">
-                                    <td colspan="8" class="text-center"><span>No data Available</span></td>
+                                    <td colspan="9" class="text-center"><span>No data Available</span></td>
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -124,22 +121,19 @@
                                     <td v-if="invoice.status==1"><button class="btn btn-success btn-sm">Paid</button></td>
                                     <td v-else><button class="btn btn-danger btn-sm">Due</button></td>
                                     <td>
-                                        <router-link :to="/update-hospital/ + `${invoice.id}`">
-                                            <i class="fa fa-edit text-primary" data-toggle="Edit Hospital Info" title="Edit Hospital Info"></i>
+                                        <router-link :to="/update-invoice/ + `${invoice.id}`">
+                                            <i class="fa fa-edit text-primary" data-toggle="Edit Invoice" title="Edit Invoice"></i>
                                         </router-link>
                                         <i @click="showDeleteModal(invoice, i)" data-toggle="modal" data-target="#deleteModal" class="fa fa-trash text-danger ml-2" title="Delete This Hospital"></i>
-                                        <router-link :to="/admin/ + `${invoice.id}` + '/doctor-list'">
-                                            <i class="fa fa-eye text-success ml-2" data-toggle="Visit Doctor List" title="Visit Doctor List"></i>
-                                        </router-link>
-                                        <router-link :to="/admin/ + `${invoice.id}` + '/department-list'">
-                                            <i class="fa fa-print text-warning ml-2" data-toggle="Visit Department" title="Visit Department"></i>
+                                        <router-link :to="/view-invoice/ + `${invoice.id}`">
+                                            <i class="fa fa-eye text-success ml-2" data-toggle="View Invoice" title="View Invoice"></i>
                                         </router-link>
                                     </td>
                                 </tr>
                             </tbody>
                             <tbody v-else>
                                 <tr class="text-center">
-                                    <td colspan="8">No data Available</td>
+                                    <td colspan="9">No data Available</td>
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -175,17 +169,17 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalheadline">Delete Employee</h5>
+                            <h5 class="modal-title" id="modalheadline">Delete Invoice</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to delete {{deletingItemData.hospital_name}}?
+                            Are you sure you want to delete Invoice #{{deletingItemData.id}}?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
-                            <button @click="deleteHospital" type="button" data-dismiss="modal" class="btn btn-danger">Delete</button>
+                            <button @click="deleteInvoice" type="button" data-dismiss="modal" class="btn btn-danger">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -213,7 +207,7 @@ export default {
     },
     
     methods : {
-        hospitalList() {
+        invoiceList() {
            fetch('/api/search-invoice?date_from='+this.date_from+'&&date_to='+this.date_to)
            .then(res => res.json())
            .then(res => {
@@ -224,16 +218,16 @@ export default {
 
         // Display Data in Delete Modal 
 
-        showDeleteModal(hospital, i) {
-            this.deletingItemData = hospital
+        showDeleteModal(invoice, i) {
+            this.deletingItemData = invoice
             this.i = i
         },
 
         // Delete Item
 
-        async deleteHospital() {
-            await axios.post('/api/delete-hospital/'+this.deletingItemData.id).then(response => {
-                this.hospitals.splice(this.i,1)
+        async deleteInvoice() {
+            await axios.post('/api/delete-invoice/'+this.deletingItemData.id).then(response => {
+                this.invoices.splice(this.i,1)
                 this.searchResult.splice(this.i,1)
                 this.$swal({
                    toast: true,
@@ -266,3 +260,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.fa {
+    cursor:pointer;
+    transition: 0.5s ease;
+}
+
+.fa:hover {
+    opacity : .5;
+}
+</style>

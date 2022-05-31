@@ -42,52 +42,38 @@ class Main extends Controller
     }
 
     public function addInvoice(Request $request) {
-        
-        try{
 
+        $validate = Validator::make($request->all(), [
+            'customer_id'         => 'required', 
+            'product_id'          => 'required', 
+            'total_product_price' => 'required',
+            'gross_total'         => 'required',
+            'quantity'            => 'required',
+            'status'              => 'required'
+        ]);
+
+        if(!$validate->fails()) {
             \DB::transaction(function() use($request) {
-                // dd($request->all());
-                $validate = Validator::make($request->all(), [
-                    'customer_id'         => 'required', 
-                    'total_product_price' => 'required',
-                    'status'              => 'required'
+                
+                $addInvoice = Invoice::create([
+                    'customer_id'    => $request->customer_id,
+                    'vat'            => $request->vat,
+                    'tax'            => $request->tax,
+                    'gross_total'    => $request->gross_total,
+                    'status'         => $request->status
                 ]);
-        
-                if(! $validate->fails()) {
-                    $total_product_price = $request->total_product_price + $request->vat + $request->tax;
-                    
-                    $addInvoice = Invoice::create([
-                        'customer_id'    => $request->customer_id,
-                        'vat'            => $request->vat,
-                        'tax'            => $request->tax,
-                        'gross_total'    => $total_product_price,
-                        'status'         => $request->status
-                    ]);
 
-                    InvoiceProduct::create([
-                        'invoice_id'  => $addInvoice->id,
-                        'product_id'  => $request->product_id,
-                        'customer_id' => $request->customer_id,
-                        'quantity'    => $request->quantity,
-                        'total'       => $request->total_product_price
-                    ]);
-    
-                    // foreach($request->invoice_product as $key => $product) {
-                    //     InvoiceProduct::create([
-                    //         'invoice_id'  => $addInvoice->id,
-                    //         'product_id'  => $request->invoice_product[$key]['product_id'],
-                    //         'customer_id' => $request->invoice_product[$key]['customer_id'],
-                    //         'quantity'    => $request->invoice_product[$key]['quantity'],
-                    //         'total'       => $request->invoice_product[$key]['total']
-                    //     ]);
-                    // }
-                    return response()->json(200);
-                }else{
-                    return response()->json(['errors' => $validate->errors()],401);
-                }
+                InvoiceProduct::create([
+                    'invoice_id'  => $addInvoice->id,
+                    'product_id'  => $request->product_id,
+                    'customer_id' => $request->customer_id,
+                    'quantity'    => $request->quantity,
+                    'total'       => $request->total_product_price
+                ]);
+                return response()->json(200);
             });
-        }catch(\Exception $e) {
-            return response()->json(500);
+        }else{
+            return response()->json(['errors' => $validate->errors()],401);
         }
     }
 
@@ -100,48 +86,41 @@ class Main extends Controller
     }
 
     public function updateInvoice(Request $request, $id) {
-        try{
+        $validation = Validator::make($request->all(),[
+            'customer_id'   => 'required', 
+            'gross_total'   => 'required',
+            'status'        => 'required'
+        ]);
+
+        if(!$validation->fails()) {
+            
             DB::transaction(function() use($request, $id){
-                $validation = Validator::make($request->all(),[
-                    'customer_id'         => 'required', 
-                    'total_product_price' => 'required',
-                    'status'              => 'required'
+                $update = Invoice::where('id', $id)->update([
+                'customer_id'    => $request->customer_id,
+                'vat'            => $request->vat,
+                'tax'            => $request->tax,
+                'gross_total'    => $request->gross_total,
+                'status'         => $request->status
                 ]);
-        
-                $total_product_price = $request->total_product_price + $request->vat + $request->tax;
-        
-                if(!$validation->fails()) {
-                    $update = Invoice::where('id', $id)->update([
-                       'customer_id'    => $request->customer_id,
-                       'vat'            => $request->vat,
-                       'tax'            => $request->tax,
-                       'gross_total'    => $total_product_price,
-                       'status'         => $request->status
-                    ]);
-        
-                    foreach($request->invoice_product as $key => $product) {
-        
-                        $data['invoice_id']  = $id;
-                        $data['product_id']  = $request->invoice_product[$key]['product_id'];
-                        $data['customer_id'] = $request->invoice_product[$key]['customer_id'];
-                        $data['quantity']    = $request->invoice_product[$key]['quantity'];
-                        $data['total']       = $request->invoice_product[$key]['total'];
-        
-                        $update_invoice_product = InvoiceProduct::updateOrCreate([
-                            'invoice_id'=> $id, 
-                            'product_id'=> $request->invoice_product[$key]['product_id']], $data);
-                    }
-        
-                    if($update) {
-                        return response()->json(200);
-                    }
-                }else{
-                    return response()->json(['errors' => $validation->errors()],401);
+
+                // Update Invoice Product 
+
+                $data['invoice_id']  = $id;
+                $data['product_id']  = $request->invoice_products['product_id'];
+                $data['customer_id'] = $request->customer_id;
+                $data['quantity']    = $request->invoice_products['quantity'];
+                $data['total']       = $request->invoice_products['total'];
+
+                $update_invoice_product = InvoiceProduct::updateOrCreate([
+                    'invoice_id'=> $id, 
+                    'product_id'=> $request->invoice_products['product_id']], $data);
+    
+                if($update && $update_invoice_product) {
+                    return response()->json(200);
                 }
             });
-
-        }catch(\Exception $e) {
-            return response()->json(500);
+        }else{
+            return response()->json(['errors' => $validation->errors()],401);
         }
     }
 
@@ -160,6 +139,12 @@ class Main extends Controller
         }catch(Exception $e) {
             return response()->json(500);
         }
+    }
+
+    public function invoiceProducts(Request $request, $id) {
+        $products = Product::where('id', $id)->get();
+
+        return response()->json($products, 200);
     }
 
     public function costCalculator(Request $request) {

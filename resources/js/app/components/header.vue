@@ -17,7 +17,7 @@
                 <!-- User Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        <img src="/doctors/avator.jpg" height="20" width="20" alt=""  class="img-circle elevation-2"> &nbsp; {{ currentUser.name }}
+                        <img src="/user/avator.jpg" height="20" width="20" alt=""  class="img-circle elevation-2"> &nbsp; {{ currentUser.name }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                         <button @click="logout()" type="button" class="dropdown-item text-center">
