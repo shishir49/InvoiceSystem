@@ -27,13 +27,19 @@
                     <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-sm-1 text-right">
+                                <label for="" class="spacing">From</label>
+                            </div>
+                            <div class="col-sm-3">
                                 <input type="date" v-model="date_from" class="form-control" placeholder="From">
                             </div>
-                            <div class="col-3">
+                             <div class="col-sm-1 text-right">
+                                 <label for="" class="spacing">To</label>
+                            </div>
+                            <div class="col-sm-3">
                                 <input type="date" v-model="date_to" class="form-control" placeholder="To">
                             </div>
-                            <div class="col-3">
+                            <div class="col-sm-3">
                                 <button @click="invoiceList" type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </div>
@@ -269,5 +275,10 @@ export default {
 
 .fa:hover {
     opacity : .5;
+}
+
+.spacing{
+    padding: 5px;
+    margin: 0;
 }
 </style>

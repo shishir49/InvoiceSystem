@@ -11,6 +11,10 @@ import NotFound from './app/notfound.vue'
 
 const routes = [
     {
+        path : '/',
+        meta : { redirect : true }
+    },
+    {
         path : '/add-invoice',
         name : 'add-invoice',
         component : AddInvoice,
@@ -80,9 +84,13 @@ router.beforeEach((to, from, next) => {
         }else{
             next()
         }
-   }else{
-       next()
-   }
+   }else if(to.matched.some(record => record.meta.redirect)) {
+        next({
+            path : '/login'
+        })
+    }else{
+        next()
+    }
 })
 
 export default router
