@@ -29,6 +29,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Customer <span class="text-danger">*</span></label>
@@ -38,31 +39,36 @@
                                         <span v-if="allerrors.name" class="text-danger">{{allerrors.name[0]}}</span>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
-                                    <label for="">Product <span class="text-danger">*</span></label>
+                                    <label for="">Product</label>
                                     <select class="form-control" v-model="invoiceInfo.invoice_products.product_id" @change="getProductCost">
                                         <option value="">Select a Product</option>
                                         <option v-for="(product, i) in products" :key="i" :value="product.id">{{ product.product_name }}</option>
                                     </select>
                                     <span v-if="allerrors.product_id" class="text-danger">{{allerrors.product_id[0]}}</span>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Vat</label>
                                         <input @keyup="calculateGrossTotal" type="text" class="form-control mb-2" v-model="invoiceInfo.vat" placeholder="Vat">
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Tax</label>
                                         <input @keyup="calculateGrossTotal" type="text" class="form-control mb-2" v-model="invoiceInfo.tax" placeholder="Tax">
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
-                                    <label for="">Quantity <span class="text-danger">*</span></label>
+                                    <label for="">Quantity</label>
                                     <input type="text" class="form-control" placeholder="Quantity" v-model="invoiceInfo.invoice_products.quantity" @keyup="getProductCost">
                                     <span v-if="allerrors.quantity" class="text-danger">{{allerrors.quantity[0]}}</span>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Status <span class="text-danger">*</span></label>
@@ -74,21 +80,25 @@
                                         <span v-if="allerrors.status" class="text-danger">{{allerrors.status[0]}}</span>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Tota Product Price  <span class="text-danger">*</span></label>
                                         <input disabled type="text" class="form-control mb-2" v-model="invoiceInfo.invoice_products.total" placeholder="Tota Product Price">
-                                    <span class="text-danger" v-if="allerrors.total_product_price">{{allerrors.total_product_price[0]}}</span>
+                                    <span class="text-danger" v-if="allerrors.total">{{allerrors.total[0]}}</span>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Gross Total  <span class="text-danger">*</span></label>
                                         <input disabled type="text" class="form-control mb-2" v-model="invoiceInfo.gross_total" placeholder="Gross Total">
-                                    <span class="text-danger" v-if="allerrors.gross_total">{{allerrors.gross_total[0]}}</span>
+                                        <span class="text-danger" v-if="allerrors.gross_total">{{allerrors.gross_total[0]}}</span>
                                     </div>
                                 </div>
+
                             </div>
+                            
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -145,7 +155,7 @@ export default {
 
         getProductCost() {
            axios.get('/api/product-cost?product_id='+this.invoiceInfo.invoice_products.product_id+'&&quantity='+this.invoiceInfo.invoice_products.quantity, this.invoiceInfo).then(response => {
-               this.invoiceInfo.invoice_products.total_product_price = Number(response.data)
+               this.invoiceInfo.invoice_products.total = Number(response.data)
                this.calculateGrossTotal
            })
         },
@@ -153,7 +163,7 @@ export default {
 
     computed : {
         calculateGrossTotal() {
-            var total = this.invoiceInfo.gross_total = Number(this.invoiceInfo.invoice_products.total_product_price)+Number(this.invoiceInfo.vat)+Number(this.invoiceInfo.tax)
+            var total = this.invoiceInfo.gross_total = Number(this.invoiceInfo.invoice_products.total)+Number(this.invoiceInfo.vat)+Number(this.invoiceInfo.tax)
             return total;
         }
     },

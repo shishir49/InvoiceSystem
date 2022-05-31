@@ -1,21 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import visitorLayout from './app/layout/visitor'
 import adminLayout from './app/layout/admin'
-import Dashboard from './app/admin/dashboard.vue'
 import AddInvoice from './app/admin/invoice/add.vue'
 import UpdateInvoice from './app/admin/invoice/update.vue'
 import ViewInvoice from './app/admin/invoice/view.vue'
 import InvoiceList from './app/admin/invoice/list.vue'
 import Login from './app/auth/login.vue'
 import Registration from './app/auth/registration.vue'
+import NotFound from './app/notfound.vue'
 
 const routes = [
-    {
-        path : '/dashboard',
-        name : 'dashboard',
-        component : Dashboard,
-        meta : { layout : adminLayout, auth : true }
-    },
     {
         path : '/add-invoice',
         name : 'add-invoice',
@@ -51,6 +45,12 @@ const routes = [
         name : 'registration',
         component : Registration,
         meta : { layout : visitorLayout, visitor : true }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name : 'not-found',
+        component : NotFound,
+        meta : { layout : visitorLayout }
     }
 ]
 
@@ -75,7 +75,7 @@ router.beforeEach((to, from, next) => {
    }else if(to.matched.some(record => record.meta.visitor)) {
         if(isLoggedIn()) {
             next({
-                path : '/dashboard'
+                path : '/invoice-list'
             })
         }else{
             next()

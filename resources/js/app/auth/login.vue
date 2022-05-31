@@ -49,7 +49,7 @@ export default {
                    title: 'Success',
                    text: 'Login Successful !',
                })
-               this.$router.push({ path: '/dashboard' })
+               this.$router.push({ path: '/invoice-list' })
              }).catch((errors) => {
                 this.errors = errors.response.data.error
                 this.$swal({
